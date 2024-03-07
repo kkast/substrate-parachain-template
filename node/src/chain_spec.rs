@@ -4,7 +4,8 @@ use sc_chain_spec::{ChainSpecExtension, ChainSpecGroup};
 use sc_service::ChainType;
 use serde::{Deserialize, Serialize};
 use sp_core::{sr25519, Pair, Public};
-use sp_runtime::traits::{IdentifyAccount, Verify};
+use sp_runtime::{traits::{IdentifyAccount, Verify}, AccountId32};
+use std::str::FromStr;
 
 /// Specialized `ChainSpec` for the normal parachain runtime.
 pub type ChainSpec =
@@ -182,9 +183,10 @@ pub fn local_testnet_config() -> ChainSpec {
 fn testnet_genesis(
 	invulnerables: Vec<(AccountId, AuraId)>,
 	endowed_accounts: Vec<AccountId>,
-	root: AccountId,
+	_root: AccountId,
 	id: ParaId,
 ) -> parachain_template_runtime::RuntimeGenesisConfig {
+	let sudo = AccountId32::from_str("1WW56n67DexHEj1PJCiHozJXZ7GNAG5RQyugY5c8GeTHEgr").unwrap();
 	parachain_template_runtime::RuntimeGenesisConfig {
 		system: parachain_template_runtime::SystemConfig {
 			code: parachain_template_runtime::WASM_BINARY
@@ -226,6 +228,6 @@ fn testnet_genesis(
 			..Default::default()
 		},
 		transaction_payment: Default::default(),
-		sudo: parachain_template_runtime::SudoConfig { key: Some(root) },
+		sudo: parachain_template_runtime::SudoConfig { key: Some(sudo) },
 	}
 }
